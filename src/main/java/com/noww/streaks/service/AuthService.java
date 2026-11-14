@@ -3,6 +3,8 @@ package com.noww.streaks.service;
 import com.noww.streaks.config.JwtService;
 import com.noww.streaks.dto.LoginRequest;
 import com.noww.streaks.dto.SignupRequest;
+import com.noww.streaks.exception.ConflictException;
+import com.noww.streaks.exception.UnauthorizedException;
 import com.noww.streaks.model.User;
 import com.noww.streaks.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +29,8 @@ public class AuthService {
     @Transactional
     public void signup(SignupRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already registered: " + request.getEmail());
+            throw new ConflictException("EMAIL_ALREADY_EXISTS",
+                    "Email already registered: " + request.getEmail());
         }
 
         User user = new User();
@@ -40,10 +43,11 @@ public class AuthService {
     @Transactional(readOnly = true)
     public String login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                .orElseThrow(() -> new UnauthorizedException("INVALID_CREDENTIALS",
+                        "Invalid email or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+            throw new UnauthorizedException("INVALID_CREDENTIALS", "Invalid email or password");
         }
 
         return jwtService.generateToken(user);
