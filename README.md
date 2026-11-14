@@ -1,5 +1,15 @@
 # Streaks API
 
+## Live API URL
+
+[https://streaks-api-ffig.onrender.com/](https://streaks-api-ffig.onrender.com/)
+
+## Bonus Requirements
+
+- [x] **Flyway database migrations** — versioned SQL in `src/main/resources/db/migration`, with Hibernate in `validate` mode.
+- [x] **Dockerization** — multi-stage `Dockerfile` plus `docker-compose.yml` running the API alongside PostgreSQL 15.
+- [x] **GitHub Actions CI** — `.github/workflows/test.yml` runs the full test suite on every push and pull request to `main`.
+
 A Spring Boot REST API for building habits, checking in daily, and earning coins. Users sign up, authenticate with a JWT, create habits, check in once per day to earn 10 coins, and redeem those coins from their wallet.
 
 Built with Java 17, Spring Boot 4, Spring Security (stateless JWT), Spring Data JPA/Hibernate, and H2 (development/tests) or PostgreSQL (production).
