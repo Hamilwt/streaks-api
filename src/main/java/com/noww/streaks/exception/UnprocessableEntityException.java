@@ -9,6 +9,6 @@ public class UnprocessableEntityException extends ApiException {
     }
 
     public UnprocessableEntityException(String error, String message) {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, error, message);
+        super(HttpStatus.UNPROCESSABLE_CONTENT, error, message);
     }
 }
