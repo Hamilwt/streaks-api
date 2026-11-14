@@ -46,6 +46,31 @@ export JWT_SECRET="dev-only-secret-at-least-32-bytes-long"
 
 The API is available at `http://localhost:8080`.
 
+## Docker / docker-compose
+
+`docker-compose.yml` starts PostgreSQL 15 and the API together. The API waits for the database healthcheck before starting, and Flyway applies the schema automatically on boot.
+
+`JWT_SECRET` is passed through from your host environment, so export it first (at least 32 bytes):
+
+macOS/Linux:
+
+```bash
+JWT_SECRET=my-32-character-secret-key docker-compose up --build
+```
+
+Windows PowerShell:
+
+```powershell
+$env:JWT_SECRET = "my-32-character-secret-key"
+docker compose up --build
+```
+
+The API is then available at `http://localhost:8080`, with PostgreSQL on `localhost:5432`.
+
+Stop the stack with `docker compose down`; add `-v` to also delete the database volume. If you are on Compose v2, `docker compose` is the equivalent of `docker-compose`.
+
+The image is built in two stages: `eclipse-temurin:17-jdk` compiles and packages the jar, then only the jar is copied into a slim `eclipse-temurin:17-jre-alpine` runtime image.
+
 ## Endpoints
 
 | Method | Path | Auth | Description |

@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: streaks
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: streaksdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U streaks -d streaksdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/streaksdb
+      SPRING_DATASOURCE_USERNAME: streaks
+      SPRING_DATASOURCE_PASSWORD: secret
+      JWT_SECRET: ${JWT_SECRET}
+
+volumes:
+  postgres_data:
